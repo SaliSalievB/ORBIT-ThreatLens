@@ -53,7 +53,7 @@ orbit scan https://example.com --authorized --markdown
 Use hosted AI analysis:
 
 ```bash
-export ORBIT_AI_GATEWAY_URL="https://orbit.threatlens.ai/v1/analyze"
+export ORBIT_AI_GATEWAY_URL="https://165.245.244.247.sslip.io/v1/analyze"
 export ORBIT_API_TOKEN="your-orbit-token"
 orbit scan https://example.com --authorized --ai
 ```
@@ -89,6 +89,8 @@ The private SaaS implementation is intentionally outside git:
 ```text
 private_saas/   # gitignored, local-only, contains OpenAI-backed gateway
 ```
+
+The gateway is currently live at `https://165.245.244.247.sslip.io`. The server is also configured for `orbit.threatxlens.com`; point that DNS record at the gateway droplet before switching the public default to the branded host.
 
 ## Documentation
 

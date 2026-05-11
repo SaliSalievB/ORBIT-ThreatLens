@@ -10,7 +10,7 @@ from .models import ScanReport
 from .privacy import redact_for_ai
 
 
-DEFAULT_GATEWAY_URL = "https://orbit.threatlens.ai/v1/analyze"
+DEFAULT_GATEWAY_URL = "https://165.245.244.247.sslip.io/v1/analyze"
 
 
 class AIGatewayError(RuntimeError):

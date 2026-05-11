@@ -50,12 +50,14 @@ OpenAI’s current [GPT-5.5 guidance](https://developers.openai.com/api/docs/gui
 ## Client Configuration
 
 ```bash
-export ORBIT_AI_GATEWAY_URL="https://orbit.threatlens.ai/v1/analyze"
+export ORBIT_AI_GATEWAY_URL="https://165.245.244.247.sslip.io/v1/analyze"
 export ORBIT_API_TOKEN="user-token"
 orbit scan https://example.com --authorized --ai
 ```
 
 The token is an ORBIT gateway token, not an OpenAI key.
+
+Current hosted gateway: `https://165.245.244.247.sslip.io`. The droplet Caddy config also includes `orbit.threatxlens.com`, which can become the default once the Cloudflare A record points to the droplet.
 
 ## Private Gateway Configuration
 
