@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orbit-security"
+version = "0.1.0"
+description = "ORBIT: authorized reconnaissance and breach-impact reporting for security teams."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "ThreatLens" }
+]
+keywords = ["security", "reconnaissance", "osint", "exposure-management", "cybersecurity"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/SaliSalievB/ORBIT-ThreatLens"
+Documentation = "https://github.com/SaliSalievB/ORBIT-ThreatLens#readme"
+Issues = "https://github.com/SaliSalievB/ORBIT-ThreatLens/issues"
+
+[project.optional-dependencies]
+server = ["fastapi>=0.115.0", "uvicorn>=0.30.0"]
+dev = ["pytest>=8.0.0", "httpx>=0.27.0"]
+all = ["fastapi>=0.115.0", "uvicorn>=0.30.0"]
+
+[project.scripts]
+orbit = "orbit.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["orbit"]

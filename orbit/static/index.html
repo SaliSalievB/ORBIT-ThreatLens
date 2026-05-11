@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Threat Lens ORBIT</title>
+    <link rel="icon" href="/static/favicon.png" />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17202c;
+        --muted: #667085;
+        --line: #d8dee8;
+        --panel: #ffffff;
+        --surface: #f4f7f9;
+        --accent: #087b83;
+        --accent-strong: #095f66;
+        --blue: #315f9f;
+        --danger: #b42318;
+        --warning: #a15c07;
+        --good: #177245;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      header {
+        background: #ffffff;
+        border-bottom: 1px solid var(--line);
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+      }
+      .brand {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        min-width: 0;
+      }
+      .brand img {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 {
+        margin-bottom: 2px;
+        font-size: 20px;
+        letter-spacing: 0;
+      }
+      h2 {
+        font-size: 18px;
+        letter-spacing: 0;
+        margin-bottom: 8px;
+      }
+      h3 {
+        font-size: 15px;
+        letter-spacing: 0;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .shell {
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 22px;
+        display: grid;
+        grid-template-columns: minmax(320px, 380px) 1fr;
+        gap: 18px;
+      }
+      section, .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      form {
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+      }
+      label {
+        display: grid;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      input, select {
+        width: 100%;
+        padding: 10px 11px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font: inherit;
+        background: #fff;
+        color: var(--ink);
+      }
+      input:focus, select:focus {
+        outline: 2px solid rgba(8, 123, 131, 0.18);
+        border-color: var(--accent);
+      }
+      .check {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        color: var(--ink);
+      }
+      .check input {
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        flex: 0 0 auto;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      button {
+        border: 0;
+        border-radius: 6px;
+        padding: 11px 14px;
+        font: inherit;
+        font-weight: 750;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+      }
+      button:hover { background: var(--accent-strong); }
+      button:disabled {
+        opacity: 0.62;
+        cursor: wait;
+      }
+      .results {
+        min-height: 640px;
+        padding: 18px;
+      }
+      .status {
+        display: grid;
+        gap: 12px;
+      }
+      .score {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: center;
+      }
+      .score strong {
+        display: grid;
+        place-items: center;
+        width: 82px;
+        height: 82px;
+        border-radius: 8px;
+        background: #e5f4f2;
+        color: var(--accent-strong);
+        font-size: 26px;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(74px, 1fr));
+        gap: 8px;
+        margin: 16px 0;
+      }
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        min-height: 68px;
+      }
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 750;
+      }
+      .metric strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 20px;
+      }
+      .finding {
+        border-top: 1px solid var(--line);
+        padding: 14px 0;
+      }
+      .finding h3 {
+        margin-bottom: 7px;
+      }
+      .finding p {
+        margin-bottom: 8px;
+        line-height: 1.48;
+      }
+      .badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: #eef2f6;
+        color: #344054;
+      }
+      .badge.critical, .badge.high { background: #fef3f2; color: var(--danger); }
+      .badge.medium { background: #fff4df; color: var(--warning); }
+      .badge.low { background: #eaf1fb; color: var(--blue); }
+      .badge.info { background: #ebf7ef; color: var(--good); }
+      details {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        margin-top: 8px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 750;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        background: #101828;
+        color: #f2f4f7;
+        padding: 14px;
+        border-radius: 8px;
+        max-height: 360px;
+        overflow: auto;
+      }
+      .empty {
+        display: grid;
+        place-items: center;
+        min-height: 520px;
+        text-align: center;
+      }
+      .empty img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 16px;
+      }
+      @media (max-width: 900px) {
+        .shell { grid-template-columns: 1fr; padding: 14px; }
+        header { align-items: flex-start; flex-direction: column; }
+        .metrics { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      }
+      @media (max-width: 520px) {
+        .row { grid-template-columns: 1fr; }
+        .brand img { width: 46px; height: 46px; }
+        .score { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img src="/static/logo.png" alt="Threat Lens ORBIT" />
+        <div>
+          <h1>Threat Lens ORBIT</h1>
+          <div class="meta">Authorized reconnaissance and breach-impact reporting</div>
+        </div>
+      </div>
+      <div class="meta">Limit removal: threatlens@outlook.com</div>
+    </header>
+    <main class="shell">
+      <section>
+        <form id="scan-form">
+          <label>
+            Target
+            <input id="target" name="target" placeholder="https://example.com" autocomplete="off" required />
+          </label>
+          <div class="row">
+            <label>
+              Depth
+              <select id="depth" name="depth">
+                <option value="standard">Standard</option>
+                <option value="aggressive">Aggressive ports</option>
+              </select>
+            </label>
+            <label>
+              Timeout
+              <input id="timeout" name="timeout" type="number" min="0.1" step="0.1" value="4.0" />
+            </label>
+          </div>
+          <label class="check">
+            <input id="authorized" name="authorized" type="checkbox" required />
+            <span>I am authorized to assess this target.</span>
+          </label>
+          <label class="check">
+            <input id="include_ai" name="include_ai" type="checkbox" />
+            <span>AI breach-impact summary</span>
+          </label>
+          <label>
+            Gateway URL
+            <input id="ai_gateway_url" name="ai_gateway_url" placeholder="https://orbit.threatlens.ai/v1/analyze" autocomplete="off" />
+          </label>
+          <label>
+            ORBIT Token
+            <input id="api_token" name="api_token" type="password" autocomplete="off" />
+          </label>
+          <button id="run" type="submit">Run Scan</button>
+          <div class="meta">OpenAI credentials stay on the private Threat Lens gateway.</div>
+        </form>
+      </section>
+      <section class="results" id="results">
+        <div class="empty">
+          <div>
+            <img src="/static/logo.png" alt="" />
+            <h2>Ready</h2>
+            <p class="meta">Reports appear here after an authorized scan.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const form = document.querySelector("#scan-form");
+      const button = document.querySelector("#run");
+      const results = document.querySelector("#results");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        results.innerHTML = '<div class="status"><h2>Scanning</h2><p class="meta">Collecting posture signals...</p></div>';
+        const gatewayUrl = document.querySelector("#ai_gateway_url").value.trim();
+        const apiToken = document.querySelector("#api_token").value.trim();
+        const payload = {
+          target: document.querySelector("#target").value.trim(),
+          authorized: document.querySelector("#authorized").checked,
+          depth: document.querySelector("#depth").value,
+          timeout: Number(document.querySelector("#timeout").value || 4.0),
+          include_ai: document.querySelector("#include_ai").checked,
+          ai_gateway_url: gatewayUrl || null,
+          api_token: apiToken || null
+        };
+        try {
+          const response = await fetch("/api/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.detail || "Scan failed");
+          render(data.report);
+        } catch (error) {
+          results.innerHTML = `<h2>Scan Failed</h2><p class="meta">${escapeHtml(error.message)}</p>`;
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      function render(report) {
+        const counts = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
+        for (const finding of report.findings) counts[finding.severity] = (counts[finding.severity] || 0) + 1;
+        const findings = report.findings.map((finding) => `
+          <article class="finding">
+            <h3>${escapeHtml(finding.title)}</h3>
+            <span class="badge ${finding.severity}">${escapeHtml(finding.severity)}</span>
+            <p>${escapeHtml(finding.description)}</p>
+            <p><strong>Impact:</strong> ${escapeHtml(finding.impact)}</p>
+            <p><strong>Recommendation:</strong> ${escapeHtml(finding.recommendation)}</p>
+          </article>
+        `).join("");
+        results.innerHTML = `
+          <div class="score">
+            <strong>${report.risk_score}</strong>
+            <div>
+              <h2>${escapeHtml(report.target.host)}</h2>
+              <p class="meta">${escapeHtml(report.summary)}</p>
+            </div>
+          </div>
+          <div class="metrics">
+            <div class="metric"><span>Critical</span><strong>${counts.critical}</strong></div>
+            <div class="metric"><span>High</span><strong>${counts.high}</strong></div>
+            <div class="metric"><span>Medium</span><strong>${counts.medium}</strong></div>
+            <div class="metric"><span>Low</span><strong>${counts.low}</strong></div>
+            <div class="metric"><span>Info</span><strong>${counts.info}</strong></div>
+          </div>
+          ${report.ai_summary ? `<section class="panel" style="padding: 14px; margin-bottom: 14px;"><h3>AI Breach-Impact Summary</h3><p>${escapeHtml(report.ai_summary)}</p></section>` : ""}
+          ${findings || '<p class="meta">No findings produced by the enabled checks.</p>'}
+          <details>
+            <summary>Report JSON</summary>
+            <pre>${escapeHtml(JSON.stringify(report, null, 2))}</pre>
+          </details>
+        `;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+    </script>
+  </body>
+</html>

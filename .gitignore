@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+.coverage
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+reports/
+.orbit-gateway.sqlite3
+.env
+
+# Private SaaS backend. This folder may contain OPENAI_API_KEY and hosted
+# gateway code. It is intentionally local-only and must not be pushed.
+private_saas/
