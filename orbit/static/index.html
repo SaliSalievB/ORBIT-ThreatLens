@@ -10,266 +10,512 @@
         color-scheme: light;
         --ink: #17202c;
         --muted: #667085;
+        --subtle: #8a94a6;
         --line: #d8dee8;
         --panel: #ffffff;
         --surface: #f4f7f9;
+        --surface-strong: #eef3f6;
         --accent: #087b83;
         --accent-strong: #095f66;
+        --accent-soft: #e5f4f2;
         --blue: #315f9f;
         --danger: #b42318;
         --warning: #a15c07;
         --good: #177245;
+        --shadow: 0 12px 32px rgba(16, 24, 40, 0.08);
       }
+
       * { box-sizing: border-box; }
+
       body {
         margin: 0;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: var(--surface);
         color: var(--ink);
       }
-      header {
-        background: #ffffff;
+
+      h1, h2, h3, p { margin-top: 0; }
+
+      h1 {
+        margin-bottom: 2px;
+        font-size: 20px;
+        line-height: 1.2;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-bottom: 8px;
+        font-size: 18px;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        font-size: 15px;
+        line-height: 1.3;
+        letter-spacing: 0;
+      }
+
+      p { line-height: 1.5; }
+
+      button, input, select { font: inherit; }
+
+      .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.96);
         border-bottom: 1px solid var(--line);
-        padding: 14px 24px;
+        backdrop-filter: blur(10px);
+      }
+
+      .header-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 12px 22px;
         display: flex;
         justify-content: space-between;
         gap: 18px;
         align-items: center;
       }
+
       .brand {
         display: flex;
         gap: 13px;
         align-items: center;
         min-width: 0;
       }
+
       .brand img {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
         border-radius: 8px;
         object-fit: cover;
       }
-      h1, h2, h3, p { margin-top: 0; }
-      h1 {
-        margin-bottom: 2px;
-        font-size: 20px;
-        letter-spacing: 0;
-      }
-      h2 {
-        font-size: 18px;
-        letter-spacing: 0;
-        margin-bottom: 8px;
-      }
-      h3 {
-        font-size: 15px;
-        letter-spacing: 0;
-      }
+
       .meta {
         color: var(--muted);
         font-size: 13px;
         line-height: 1.45;
       }
+
+      .contact-note {
+        max-width: 360px;
+        text-align: right;
+      }
+
       .shell {
-        max-width: 1220px;
+        max-width: 1280px;
         margin: 0 auto;
         padding: 22px;
         display: grid;
-        grid-template-columns: minmax(320px, 380px) 1fr;
+        grid-template-columns: minmax(320px, 392px) 1fr;
         gap: 18px;
+        align-items: start;
       }
-      section, .panel {
+
+      .panel {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
+        box-shadow: var(--shadow);
       }
+
+      .control-panel {
+        position: sticky;
+        top: 86px;
+      }
+
+      .panel-head {
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .eyebrow {
+        margin-bottom: 6px;
+        color: var(--accent-strong);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
       form {
         padding: 18px;
         display: grid;
         gap: 14px;
       }
+
       label {
         display: grid;
         gap: 6px;
+        color: var(--ink);
         font-size: 13px;
-        font-weight: 650;
+        font-weight: 700;
       }
+
       input, select {
         width: 100%;
+        min-height: 42px;
         padding: 10px 11px;
         border: 1px solid var(--line);
         border-radius: 6px;
-        font: inherit;
         background: #fff;
         color: var(--ink);
       }
+
+      input::placeholder { color: var(--subtle); }
+
       input:focus, select:focus {
         outline: 2px solid rgba(8, 123, 131, 0.18);
         border-color: var(--accent);
       }
+
       .check {
         display: flex;
         gap: 10px;
         align-items: flex-start;
         color: var(--ink);
+        line-height: 1.45;
       }
+
       .check input {
         width: 18px;
         height: 18px;
+        min-height: 18px;
         margin-top: 1px;
         flex: 0 0 auto;
       }
+
       .row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
       }
-      button {
+
+      .primary-action {
+        width: 100%;
+        min-height: 44px;
         border: 0;
         border-radius: 6px;
         padding: 11px 14px;
-        font: inherit;
-        font-weight: 750;
         background: var(--accent);
         color: white;
         cursor: pointer;
+        font-weight: 800;
       }
-      button:hover { background: var(--accent-strong); }
-      button:disabled {
-        opacity: 0.62;
+
+      .primary-action:hover { background: var(--accent-strong); }
+
+      .primary-action:disabled {
+        opacity: 0.64;
         cursor: wait;
       }
+
+      .safety-note {
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+      }
+
       .results {
         min-height: 640px;
         padding: 18px;
       }
-      .status {
-        display: grid;
-        gap: 12px;
-      }
-      .score {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 14px;
-        align-items: center;
-      }
-      .score strong {
+
+      .empty {
         display: grid;
         place-items: center;
-        width: 82px;
-        height: 82px;
-        border-radius: 8px;
-        background: #e5f4f2;
-        color: var(--accent-strong);
-        font-size: 26px;
+        min-height: 560px;
+        text-align: center;
       }
+
+      .empty-card {
+        max-width: 460px;
+      }
+
+      .empty img {
+        width: 132px;
+        height: 132px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 16px;
+      }
+
+      .status-card {
+        display: grid;
+        gap: 14px;
+        min-height: 560px;
+        align-content: center;
+      }
+
+      .scan-steps {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .scan-steps li {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .scan-steps li::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .error-panel, .warning-panel, .ai-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+
+      .error-panel {
+        background: #fff8f6;
+        border-color: #fecdca;
+      }
+
+      .warning-panel {
+        background: #fffbeb;
+        border-color: #fedf89;
+      }
+
+      .ai-panel {
+        background: #f0fbfa;
+        border-color: #b9e6e2;
+      }
+
+      .ai-body {
+        margin: 0;
+        color: #1f3440;
+        font-size: 14px;
+        line-height: 1.55;
+        white-space: pre-wrap;
+      }
+
+      .summary-band {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 16px;
+        align-items: stretch;
+        margin-bottom: 16px;
+      }
+
+      .risk-card {
+        display: grid;
+        place-items: center;
+        width: 116px;
+        min-height: 116px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        text-align: center;
+      }
+
+      .risk-card strong {
+        display: block;
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .risk-card span {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .summary-copy {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fff;
+      }
+
+      .summary-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 9px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        background: #fff;
+      }
+
       .metrics {
         display: grid;
         grid-template-columns: repeat(5, minmax(74px, 1fr));
         gap: 8px;
         margin: 16px 0;
       }
+
       .metric {
+        min-height: 68px;
         border: 1px solid var(--line);
         border-radius: 8px;
         padding: 10px;
-        min-height: 68px;
+        background: #fff;
       }
+
       .metric span {
         display: block;
         color: var(--muted);
         font-size: 12px;
+        font-weight: 800;
         text-transform: uppercase;
-        font-weight: 750;
       }
+
       .metric strong {
         display: block;
         margin-top: 6px;
         font-size: 20px;
       }
+
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin: 18px 0 10px;
+      }
+
+      .finding-list {
+        display: grid;
+        gap: 10px;
+      }
+
       .finding {
-        border-top: 1px solid var(--line);
-        padding: 14px 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fff;
       }
-      .finding h3 {
-        margin-bottom: 7px;
+
+      .finding-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 10px;
       }
+
+      .finding h3 { margin-bottom: 4px; }
+
       .finding p {
         margin-bottom: 8px;
         line-height: 1.48;
       }
+
+      .finding-foot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
       .badge {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
         border-radius: 999px;
-        padding: 3px 8px;
+        padding: 3px 9px;
         font-size: 12px;
         font-weight: 800;
         text-transform: uppercase;
         background: #eef2f6;
         color: #344054;
+        white-space: nowrap;
       }
+
       .badge.critical, .badge.high { background: #fef3f2; color: var(--danger); }
       .badge.medium { background: #fff4df; color: var(--warning); }
       .badge.low { background: #eaf1fb; color: var(--blue); }
       .badge.info { background: #ebf7ef; color: var(--good); }
+
       details {
         border-top: 1px solid var(--line);
         padding-top: 14px;
-        margin-top: 8px;
+        margin-top: 18px;
       }
+
       summary {
         cursor: pointer;
-        font-weight: 750;
+        font-weight: 800;
       }
+
       pre {
+        max-height: 360px;
+        margin-bottom: 0;
+        overflow: auto;
         white-space: pre-wrap;
         overflow-wrap: anywhere;
+        border-radius: 8px;
+        padding: 14px;
         background: #101828;
         color: #f2f4f7;
-        padding: 14px;
-        border-radius: 8px;
-        max-height: 360px;
-        overflow: auto;
       }
-      .empty {
-        display: grid;
-        place-items: center;
-        min-height: 520px;
-        text-align: center;
-      }
-      .empty img {
-        width: 180px;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 16px;
-      }
-      @media (max-width: 900px) {
+
+      @media (max-width: 980px) {
         .shell { grid-template-columns: 1fr; padding: 14px; }
-        header { align-items: flex-start; flex-direction: column; }
+        .control-panel { position: static; }
+        .header-inner { align-items: flex-start; flex-direction: column; }
+        .contact-note { text-align: left; max-width: none; }
         .metrics { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
       }
-      @media (max-width: 520px) {
-        .row { grid-template-columns: 1fr; }
-        .brand img { width: 46px; height: 46px; }
-        .score { grid-template-columns: 1fr; }
+
+      @media (max-width: 560px) {
+        .row, .summary-band { grid-template-columns: 1fr; }
+        .brand img { width: 44px; height: 44px; }
+        .risk-card { width: 100%; min-height: 96px; }
+        .finding-top { flex-direction: column; }
       }
     </style>
   </head>
   <body>
-    <header>
-      <div class="brand">
-        <img src="/static/logo.png" alt="Threat Lens ORBIT" />
-        <div>
-          <h1>Threat Lens ORBIT</h1>
-          <div class="meta">Authorized reconnaissance and breach-impact reporting</div>
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <img src="/static/logo.png" alt="Threat Lens ORBIT" />
+          <div>
+            <h1>Threat Lens ORBIT</h1>
+            <div class="meta">Authorized exposure triage for security teams</div>
+          </div>
         </div>
+        <div class="meta contact-note">Free daily AI limit applies. Contact threatlens@outlook.com for unlimited access.</div>
       </div>
-      <div class="meta">Limit removal: threatlens@outlook.com</div>
     </header>
     <main class="shell">
-      <section>
+      <section class="panel control-panel" aria-labelledby="scan-setup-title">
+        <div class="panel-head">
+          <div class="eyebrow">Assessment setup</div>
+          <h2 id="scan-setup-title">Run a controlled scan</h2>
+          <p class="meta">Check external exposure, service posture, and breach-impact paths for assets you are authorized to test.</p>
+        </div>
         <form id="scan-form">
           <label>
-            Target
+            Target URL or host
             <input id="target" name="target" placeholder="https://example.com" autocomplete="off" required />
           </label>
           <div class="row">
@@ -287,30 +533,30 @@
           </div>
           <label class="check">
             <input id="authorized" name="authorized" type="checkbox" required />
-            <span>I am authorized to assess this target.</span>
+            <span>I confirm I am authorized to assess this asset.</span>
           </label>
           <label class="check">
             <input id="include_ai" name="include_ai" type="checkbox" />
-            <span>AI breach-impact summary</span>
+            <span>Generate AI breach-impact brief</span>
           </label>
           <label>
-            Gateway URL
+            AI gateway endpoint
             <input id="ai_gateway_url" name="ai_gateway_url" placeholder="https://165.245.244.247.sslip.io/v1/analyze" autocomplete="off" />
           </label>
           <label>
-            ORBIT Token
+            ORBIT access token (optional)
             <input id="api_token" name="api_token" type="password" autocomplete="off" />
           </label>
-          <button id="run" type="submit">Run Scan</button>
-          <div class="meta">OpenAI credentials stay on the private Threat Lens gateway.</div>
+          <button class="primary-action" id="run" type="submit">Run Authorized Scan</button>
+          <div class="meta safety-note">OpenAI credentials stay server-side. Reports are redacted before AI analysis.</div>
         </form>
       </section>
-      <section class="results" id="results">
+      <section class="panel results" id="results" aria-live="polite">
         <div class="empty">
-          <div>
+          <div class="empty-card">
             <img src="/static/logo.png" alt="" />
-            <h2>Ready</h2>
-            <p class="meta">Reports appear here after an authorized scan.</p>
+            <h2>No assessment loaded</h2>
+            <p class="meta">Run an authorized scan to see risk score, severity counts, prioritized findings, optional AI breach-impact brief, and raw report output.</p>
           </div>
         </div>
       </section>
@@ -323,14 +569,27 @@
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         button.disabled = true;
-        results.innerHTML = '<div class="status"><h2>Scanning</h2><p class="meta">Collecting posture signals...</p></div>';
+        results.innerHTML = `
+          <div class="status-card">
+            <div>
+              <div class="eyebrow">Live assessment</div>
+              <h2>Assessment in progress</h2>
+              <p class="meta">ORBIT is collecting posture signals and preparing the report.</p>
+            </div>
+            <ul class="scan-steps">
+              <li>Resolving target and DNS posture</li>
+              <li>Checking web, TLS, header, and exposure signals</li>
+              <li>Preparing findings and optional breach-impact brief</li>
+            </ul>
+          </div>
+        `;
         const gatewayUrl = document.querySelector("#ai_gateway_url").value.trim();
         const apiToken = document.querySelector("#api_token").value.trim();
         const payload = {
           target: document.querySelector("#target").value.trim(),
           authorized: document.querySelector("#authorized").checked,
           depth: document.querySelector("#depth").value,
-          timeout: Number(document.querySelector("#timeout").value || 4.0),
+          timeout: Number(document.querySelector("#timeout").value || 30),
           include_ai: document.querySelector("#include_ai").checked,
           ai_gateway_url: gatewayUrl || null,
           api_token: apiToken || null
@@ -345,7 +604,13 @@
           if (!response.ok) throw new Error(data.detail || "Scan failed");
           render(data.report);
         } catch (error) {
-          results.innerHTML = `<h2>Scan Failed</h2><p class="meta">${escapeHtml(error.message)}</p>`;
+          results.innerHTML = `
+            <div class="error-panel">
+              <div class="eyebrow">Scan error</div>
+              <h2>Assessment could not complete</h2>
+              <p class="meta">${escapeHtml(error.message)}</p>
+            </div>
+          `;
         } finally {
           button.disabled = false;
         }
@@ -354,21 +619,60 @@
       function render(report) {
         const counts = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
         for (const finding of report.findings) counts[finding.severity] = (counts[finding.severity] || 0) + 1;
-        const findings = report.findings.map((finding) => `
-          <article class="finding">
-            <h3>${escapeHtml(finding.title)}</h3>
-            <span class="badge ${finding.severity}">${escapeHtml(finding.severity)}</span>
-            <p>${escapeHtml(finding.description)}</p>
-            <p><strong>Impact:</strong> ${escapeHtml(finding.impact)}</p>
-            <p><strong>Recommendation:</strong> ${escapeHtml(finding.recommendation)}</p>
-          </article>
-        `).join("");
+        const totalFindings = report.findings.length;
+        const risk = riskLevel(report.risk_score);
+        const aiFailed = report.ai_summary && report.ai_summary.startsWith("AI analysis unavailable:");
+        const aiPanel = report.ai_summary ? (aiFailed ? `
+          <section class="warning-panel">
+            <div class="eyebrow">AI brief unavailable</div>
+            <h3>Breach-impact brief could not be generated</h3>
+            <p class="meta">${escapeHtml(report.ai_summary)}</p>
+          </section>
+        ` : `
+          <section class="ai-panel">
+            <div class="eyebrow">AI analysis</div>
+            <h3>Breach-impact brief</h3>
+            <p class="ai-body">${escapeHtml(report.ai_summary)}</p>
+          </section>
+        `) : "";
+        const findings = report.findings.map((finding) => {
+          const evidenceCount = (finding.evidence || []).length;
+          return `
+            <article class="finding">
+              <div class="finding-top">
+                <div>
+                  <h3>${escapeHtml(finding.title)}</h3>
+                  <div class="meta">${escapeHtml(finding.category)} / ${escapeHtml(finding.confidence || "medium")} confidence</div>
+                </div>
+                <span class="badge ${finding.severity}">${escapeHtml(finding.severity)}</span>
+              </div>
+              <p>${escapeHtml(finding.description)}</p>
+              <p><strong>Impact:</strong> ${escapeHtml(finding.impact)}</p>
+              <p><strong>Recommendation:</strong> ${escapeHtml(finding.recommendation)}</p>
+              <div class="finding-foot">
+                <span class="pill">Evidence: ${evidenceCount}</span>
+                <span class="pill">ID: ${escapeHtml(finding.id)}</span>
+              </div>
+            </article>
+          `;
+        }).join("");
         results.innerHTML = `
-          <div class="score">
-            <strong>${report.risk_score}</strong>
-            <div>
+          <div class="summary-band">
+            <div class="risk-card">
+              <div>
+                <strong>${report.risk_score}</strong>
+                <span>${risk}</span>
+              </div>
+            </div>
+            <div class="summary-copy">
+              <div class="eyebrow">Assessment summary</div>
               <h2>${escapeHtml(report.target.host)}</h2>
               <p class="meta">${escapeHtml(report.summary)}</p>
+              <div class="summary-meta">
+                <span class="pill">Target: ${escapeHtml(report.target.origin || report.target.host)}</span>
+                <span class="pill">Completed: ${formatDate(report.completed_at)}</span>
+                <span class="pill">Findings: ${totalFindings}</span>
+              </div>
             </div>
           </div>
           <div class="metrics">
@@ -378,13 +682,33 @@
             <div class="metric"><span>Low</span><strong>${counts.low}</strong></div>
             <div class="metric"><span>Info</span><strong>${counts.info}</strong></div>
           </div>
-          ${report.ai_summary ? `<section class="panel" style="padding: 14px; margin-bottom: 14px;"><h3>AI Breach-Impact Summary</h3><p>${escapeHtml(report.ai_summary)}</p></section>` : ""}
-          ${findings || '<p class="meta">No findings produced by the enabled checks.</p>'}
+          ${aiPanel}
+          <div class="section-title">
+            <h2>Prioritized findings</h2>
+            <span class="pill">${totalFindings} total</span>
+          </div>
+          <div class="finding-list">
+            ${findings || '<p class="meta">No findings were produced by the enabled checks.</p>'}
+          </div>
           <details>
-            <summary>Report JSON</summary>
+            <summary>Export / raw report</summary>
             <pre>${escapeHtml(JSON.stringify(report, null, 2))}</pre>
           </details>
         `;
+      }
+
+      function riskLevel(score) {
+        if (score >= 80) return "Critical";
+        if (score >= 55) return "High";
+        if (score >= 25) return "Moderate";
+        return "Low";
+      }
+
+      function formatDate(value) {
+        if (!value) return "Unknown";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return escapeHtml(value);
+        return escapeHtml(date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
       }
 
       function escapeHtml(value) {
