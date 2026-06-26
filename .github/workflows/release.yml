@@ -26,7 +26,7 @@ jobs:
       - name: Check package metadata
         run: python -m twine check dist/*
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/*
       - name: Publish to PyPI
