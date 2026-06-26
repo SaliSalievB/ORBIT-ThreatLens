@@ -26,6 +26,12 @@ ORBIT checks are intentionally constrained:
 
 The HTTP exposure probes request a small fixed list of paths and only store short metadata/evidence, not raw secret files.
 
+## Local Dashboard Boundary
+
+The dashboard is designed for local operation. `/api/scan` accepts loopback clients only by default and rejects mismatched browser origins. Binding the dashboard to a LAN or public interface requires an explicit `ORBIT_DASHBOARD_ALLOW_REMOTE=1` override for scan execution.
+
+Dashboard responses include browser hardening headers. The current single-file dashboard keeps inline script/style allowances in its Content Security Policy.
+
 ## AI Safety Boundary
 
 The AI prompt asks for defensive breach-impact analysis and remediation planning. It explicitly avoids exploitation steps, payloads, credential abuse guidance, or compromise instructions.
@@ -41,6 +47,8 @@ The OpenAI key belongs in the private SaaS gateway only. Do not place `OPENAI_AP
 ## Private SaaS Boundary
 
 The OpenAI-backed gateway lives under `private_saas/`, which is ignored by git. Keep server secrets, premium tokens, deployment files, and local usage databases there.
+
+Public-client patches do not change hidden gateway usage limits, premium token logic, provider credentials, model configuration, or deployment state.
 
 ## Freemium Abuse Controls
 

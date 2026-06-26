@@ -61,8 +61,9 @@ class Target:
 
     @property
     def origin(self) -> str:
+        host = f"[{self.host}]" if ":" in self.host else self.host
         port = f":{self.port}" if self.port else ""
-        return f"{self.scheme}://{self.host}{port}"
+        return f"{self.scheme}://{host}{port}"
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -64,7 +64,7 @@ def render_markdown(report: ScanReport) -> str:
         if finding.evidence:
             lines.append("Evidence:")
             for evidence in finding.evidence:
-                lines.append(f"- `{evidence.label}`: `{evidence.value}`")
+                lines.append(f"- {_markdown_code(evidence.label)}: {_markdown_code(evidence.value)}")
             lines.append("")
         if finding.references:
             lines.append("References:")
@@ -85,3 +85,8 @@ def render_markdown(report: ScanReport) -> str:
 
 def _slug(value: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_.-]+", "-", value).strip("-") or "target"
+
+
+def _markdown_code(value: str) -> str:
+    safe = str(value).replace("\r", "\\r").replace("\n", "\\n").replace("`", "&#96;")
+    return f"`{safe}`"

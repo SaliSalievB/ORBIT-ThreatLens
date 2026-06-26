@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from typing import Any, Protocol
 
-from .ai_client import AIGatewayClient, AIGatewayError
+from .ai_client import AIGatewayClient, AIGatewayError, DEFAULT_AI_TIMEOUT
 from .models import Evidence, Finding, ScanOptions, ScanReport, Severity, SEVERITY_WEIGHTS, Target, utc_now
 from .risk import calculate_risk_score, summarize_findings
 from .scanners import dns, http, ports, tls
@@ -81,7 +81,7 @@ def scan_target(target_value: str, options: ScanOptions) -> ScanReport:
             analysis = AIGatewayClient(
                 gateway_url=options.ai_gateway_url,
                 api_token=options.api_token,
-                timeout=max(options.timeout, 10.0),
+                timeout=max(options.timeout, DEFAULT_AI_TIMEOUT),
             ).analyze(report)
             report.ai_summary = analysis.get("summary")
             report.ai_usage = analysis.get("usage")

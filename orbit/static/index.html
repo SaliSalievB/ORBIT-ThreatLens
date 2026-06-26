@@ -8,24 +8,35 @@
     <style>
       :root {
         color-scheme: light;
-        --ink: #17202c;
-        --muted: #667085;
-        --subtle: #8a94a6;
-        --line: #d8dee8;
+        --ink: #101828;
+        --muted: #586474;
+        --subtle: #7b8494;
+        --line: #d8e0ea;
         --panel: #ffffff;
-        --surface: #f4f7f9;
-        --surface-strong: #eef3f6;
-        --accent: #087b83;
-        --accent-strong: #095f66;
-        --accent-soft: #e5f4f2;
-        --blue: #315f9f;
-        --danger: #b42318;
-        --warning: #a15c07;
-        --good: #177245;
-        --shadow: 0 12px 32px rgba(16, 24, 40, 0.08);
+        --surface: #f3f6f8;
+        --surface-strong: #eaf0f5;
+        --brand: #087b83;
+        --brand-strong: #075d64;
+        --brand-soft: #e7f4f3;
+        --critical: #b42318;
+        --critical-soft: #fff0ed;
+        --high: #c2410c;
+        --high-soft: #fff4e8;
+        --medium: #a15c07;
+        --medium-soft: #fff7df;
+        --low: #1d4ed8;
+        --low-soft: #edf4ff;
+        --info: #177245;
+        --info-soft: #ebf7ef;
+        --shadow: 0 14px 36px rgba(16, 24, 40, 0.08);
+        --shadow-soft: 0 8px 20px rgba(16, 24, 40, 0.06);
       }
 
       * { box-sizing: border-box; }
+
+      [hidden] { display: none !important; }
+
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
@@ -51,21 +62,24 @@
       }
 
       h3 {
-        margin-bottom: 8px;
+        margin-bottom: 7px;
         font-size: 15px;
         line-height: 1.3;
         letter-spacing: 0;
       }
 
-      p { line-height: 1.5; }
+      p {
+        margin-bottom: 0;
+        line-height: 1.5;
+      }
 
       button, input, select { font: inherit; }
 
       .app-header {
         position: sticky;
         top: 0;
-        z-index: 10;
-        background: rgba(255, 255, 255, 0.96);
+        z-index: 20;
+        background: rgba(255, 255, 255, 0.97);
         border-bottom: 1px solid var(--line);
         backdrop-filter: blur(10px);
       }
@@ -100,9 +114,52 @@
         line-height: 1.45;
       }
 
-      .contact-note {
-        max-width: 360px;
-        text-align: right;
+      .status-strip {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px 16px;
+      }
+
+      .status-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--brand-strong);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+
+      .status-label::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--brand);
+        flex: 0 0 auto;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 10px;
+        color: #344054;
+        font-size: 12px;
+        font-weight: 750;
+        line-height: 1.2;
+        background: #fff;
+        white-space: nowrap;
+      }
+
+      .pill.brand {
+        border-color: #b9e6e2;
+        background: var(--brand-soft);
+        color: var(--brand-strong);
       }
 
       .shell {
@@ -110,7 +167,7 @@
         margin: 0 auto;
         padding: 22px;
         display: grid;
-        grid-template-columns: minmax(320px, 392px) 1fr;
+        grid-template-columns: minmax(320px, 392px) minmax(0, 1fr);
         gap: 18px;
         align-items: start;
       }
@@ -134,9 +191,9 @@
 
       .eyebrow {
         margin-bottom: 6px;
-        color: var(--accent-strong);
+        color: var(--brand-strong);
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 850;
         letter-spacing: 0;
         text-transform: uppercase;
       }
@@ -144,7 +201,23 @@
       form {
         padding: 18px;
         display: grid;
-        gap: 14px;
+        gap: 16px;
+      }
+
+      fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      legend {
+        margin-bottom: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 850;
+        text-transform: uppercase;
       }
 
       label {
@@ -152,7 +225,7 @@
         gap: 6px;
         color: var(--ink);
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 750;
       }
 
       input, select {
@@ -167,17 +240,29 @@
 
       input::placeholder { color: var(--subtle); }
 
-      input:focus, select:focus {
-        outline: 2px solid rgba(8, 123, 131, 0.18);
-        border-color: var(--accent);
+      input:focus, select:focus, button:focus-visible, summary:focus-visible {
+        outline: 3px solid rgba(8, 123, 131, 0.18);
+        outline-offset: 2px;
+        border-color: var(--brand);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
       }
 
       .check {
         display: flex;
         gap: 10px;
         align-items: flex-start;
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 10px 11px;
         color: var(--ink);
         line-height: 1.45;
+        background: #fff;
       }
 
       .check input {
@@ -188,30 +273,51 @@
         flex: 0 0 auto;
       }
 
-      .row {
+      .ai-box {
         display: grid;
-        grid-template-columns: 1fr 1fr;
         gap: 10px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+
+      .ai-fields {
+        display: grid;
+        gap: 12px;
+        border: 1px solid #b9e6e2;
+        border-radius: 8px;
+        padding: 12px;
+        background: #f7fcfb;
+      }
+
+      .primary-action, .secondary-action {
+        min-height: 44px;
+        border-radius: 6px;
+        padding: 11px 14px;
+        cursor: pointer;
+        font-weight: 850;
       }
 
       .primary-action {
         width: 100%;
-        min-height: 44px;
         border: 0;
-        border-radius: 6px;
-        padding: 11px 14px;
-        background: var(--accent);
+        background: var(--brand);
         color: white;
-        cursor: pointer;
-        font-weight: 800;
       }
 
-      .primary-action:hover { background: var(--accent-strong); }
+      .primary-action:hover { background: var(--brand-strong); }
 
       .primary-action:disabled {
         opacity: 0.64;
         cursor: wait;
       }
+
+      .secondary-action {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+      }
+
+      .secondary-action:hover { border-color: var(--brand); color: var(--brand-strong); }
 
       .safety-note {
         border-top: 1px solid var(--line);
@@ -225,21 +331,56 @@
 
       .empty {
         display: grid;
-        place-items: center;
-        min-height: 560px;
-        text-align: center;
+        gap: 18px;
       }
 
-      .empty-card {
-        max-width: 460px;
-      }
-
-      .empty img {
-        width: 132px;
-        height: 132px;
-        object-fit: cover;
+      .preview-head {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 14px;
+        align-items: start;
+        padding: 18px;
+        border: 1px solid var(--line);
         border-radius: 8px;
-        margin-bottom: 16px;
+        background: #fff;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .preview-card, .metric, .summary-copy, .finding, .export-panel, .ai-panel, .warning-panel, .error-panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .preview-card {
+        min-height: 124px;
+        padding: 14px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .preview-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 15px;
+      }
+
+      .preview-list {
+        margin: 10px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 7px;
+      }
+
+      .preview-list li {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
       }
 
       .status-card {
@@ -270,12 +411,11 @@
         width: 8px;
         height: 8px;
         border-radius: 999px;
-        background: var(--accent);
+        background: var(--brand);
+        flex: 0 0 auto;
       }
 
-      .error-panel, .warning-panel, .ai-panel {
-        border: 1px solid var(--line);
-        border-radius: 8px;
+      .error-panel, .warning-panel, .ai-panel, .export-panel {
         padding: 14px;
         margin-bottom: 14px;
       }
@@ -305,7 +445,7 @@
 
       .summary-band {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 148px minmax(0, 1fr);
         gap: 16px;
         align-items: stretch;
         margin-bottom: 16px;
@@ -314,54 +454,51 @@
       .risk-card {
         display: grid;
         place-items: center;
-        width: 116px;
-        min-height: 116px;
+        min-height: 148px;
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: var(--accent-soft);
-        color: var(--accent-strong);
         text-align: center;
       }
 
       .risk-card strong {
         display: block;
-        font-size: 30px;
+        font-size: 38px;
         line-height: 1;
       }
 
       .risk-card span {
         display: block;
-        margin-top: 6px;
+        margin-top: 8px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 850;
         text-transform: uppercase;
       }
 
+      .risk-critical { background: var(--critical-soft); color: var(--critical); border-color: #fecdca; }
+      .risk-high { background: var(--high-soft); color: var(--high); border-color: #fed7aa; }
+      .risk-moderate { background: var(--medium-soft); color: var(--medium); border-color: #fedf89; }
+      .risk-low { background: var(--low-soft); color: var(--low); border-color: #bfdbfe; }
+
       .summary-copy {
-        border: 1px solid var(--line);
-        border-radius: 8px;
         padding: 14px;
-        background: #fff;
+      }
+
+      .summary-copy h2 {
+        overflow-wrap: anywhere;
+      }
+
+      .top-concerns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
       }
 
       .summary-meta {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 10px;
-      }
-
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        min-height: 24px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 3px 9px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 700;
-        background: #fff;
+        margin-top: 12px;
       }
 
       .metrics {
@@ -372,33 +509,36 @@
       }
 
       .metric {
-        min-height: 68px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
+        min-height: 74px;
         padding: 10px;
-        background: #fff;
       }
 
       .metric span {
         display: block;
         color: var(--muted);
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 850;
         text-transform: uppercase;
       }
 
       .metric strong {
         display: block;
         margin-top: 6px;
-        font-size: 20px;
+        font-size: 22px;
       }
+
+      .metric.critical strong { color: var(--critical); }
+      .metric.high strong { color: var(--high); }
+      .metric.medium strong { color: var(--medium); }
+      .metric.low strong { color: var(--low); }
+      .metric.info strong { color: var(--info); }
 
       .section-title {
         display: flex;
         justify-content: space-between;
         gap: 12px;
         align-items: center;
-        margin: 18px 0 10px;
+        margin: 20px 0 10px;
       }
 
       .finding-list {
@@ -407,15 +547,12 @@
       }
 
       .finding {
-        border: 1px solid var(--line);
-        border-radius: 8px;
         padding: 14px;
-        background: #fff;
       }
 
       .finding-top {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 12px;
         align-items: flex-start;
         margin-bottom: 10px;
@@ -442,27 +579,35 @@
         border-radius: 999px;
         padding: 3px 9px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 850;
         text-transform: uppercase;
         background: #eef2f6;
         color: #344054;
         white-space: nowrap;
       }
 
-      .badge.critical, .badge.high { background: #fef3f2; color: var(--danger); }
-      .badge.medium { background: #fff4df; color: var(--warning); }
-      .badge.low { background: #eaf1fb; color: var(--blue); }
-      .badge.info { background: #ebf7ef; color: var(--good); }
+      .badge.critical { background: var(--critical-soft); color: var(--critical); }
+      .badge.high { background: var(--high-soft); color: var(--high); }
+      .badge.medium { background: var(--medium-soft); color: var(--medium); }
+      .badge.low { background: var(--low-soft); color: var(--low); }
+      .badge.info { background: var(--info-soft); color: var(--info); }
 
-      details {
+      .export-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      details.raw-report {
         border-top: 1px solid var(--line);
         padding-top: 14px;
-        margin-top: 18px;
+        margin-top: 16px;
       }
 
       summary {
         cursor: pointer;
-        font-weight: 800;
+        font-weight: 850;
       }
 
       pre {
@@ -481,15 +626,18 @@
         .shell { grid-template-columns: 1fr; padding: 14px; }
         .control-panel { position: static; }
         .header-inner { align-items: flex-start; flex-direction: column; }
-        .contact-note { text-align: left; max-width: none; }
+        .status-strip { justify-content: flex-start; }
         .metrics { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+        .preview-grid { grid-template-columns: 1fr; }
       }
 
       @media (max-width: 560px) {
-        .row, .summary-band { grid-template-columns: 1fr; }
+        .row, .summary-band, .preview-head { grid-template-columns: 1fr; }
         .brand img { width: 44px; height: 44px; }
-        .risk-card { width: 100%; min-height: 96px; }
-        .finding-top { flex-direction: column; }
+        .risk-card { min-height: 108px; }
+        .finding-top { grid-template-columns: 1fr; }
+        .results, form, .panel-head { padding: 16px; }
+        .status-label, .pill { white-space: normal; }
       }
     </style>
   </head>
@@ -500,63 +648,113 @@
           <img src="/static/logo.png" alt="Threat Lens ORBIT" />
           <div>
             <h1>Threat Lens ORBIT</h1>
-            <div class="meta">Authorized exposure triage for security teams</div>
+            <div class="meta">Local authorized exposure assessment for security teams</div>
           </div>
         </div>
-        <div class="meta contact-note">Free daily AI limit applies. Contact threatlens@outlook.com for unlimited access.</div>
+        <div class="status-strip" aria-label="Operational status">
+          <span class="status-label">Local dashboard session</span>
+          <span class="status-label">Authorized use only</span>
+          <span class="status-label">Optional AI brief</span>
+          <span class="status-label">Reports redacted before gateway</span>
+        </div>
       </div>
     </header>
     <main class="shell">
       <section class="panel control-panel" aria-labelledby="scan-setup-title">
         <div class="panel-head">
-          <div class="eyebrow">Assessment setup</div>
-          <h2 id="scan-setup-title">Run a controlled scan</h2>
-          <p class="meta">Check external exposure, service posture, and breach-impact paths for assets you are authorized to test.</p>
+          <div class="eyebrow">Scan command</div>
+          <h2 id="scan-setup-title">Configure authorized scan</h2>
+          <p class="meta">Enter an asset you own or are approved to assess. ORBIT checks DNS, TLS, HTTP headers, exposure paths, and selected TCP services.</p>
         </div>
         <form id="scan-form">
-          <label>
-            Target URL or host
-            <input id="target" name="target" placeholder="https://example.com" autocomplete="off" required />
-          </label>
-          <div class="row">
+          <fieldset>
+            <legend>Target</legend>
             <label>
-              Depth
-              <select id="depth" name="depth">
-                <option value="standard">Standard</option>
-                <option value="aggressive">Aggressive ports</option>
-              </select>
+              Target URL or host
+              <input id="target" name="target" placeholder="https://example.com" autocomplete="off" required />
             </label>
-            <label>
-              Timeout
-              <input id="timeout" name="timeout" type="number" min="0.1" step="0.1" value="30" />
+          </fieldset>
+
+          <fieldset>
+            <legend>Scan policy</legend>
+            <div class="row">
+              <label>
+                Depth
+                <select id="depth" name="depth">
+                  <option value="standard">Standard</option>
+                  <option value="aggressive">Aggressive ports</option>
+                </select>
+              </label>
+              <label>
+                Timeout seconds
+                <input id="timeout" name="timeout" type="number" min="0.1" step="0.1" value="4.0" />
+              </label>
+            </div>
+            <label class="check">
+              <input id="authorized" name="authorized" type="checkbox" required />
+              <span>I am authorized to assess this target and accept responsibility for this scan.</span>
             </label>
-          </div>
-          <label class="check">
-            <input id="authorized" name="authorized" type="checkbox" required />
-            <span>I confirm I am authorized to assess this asset.</span>
-          </label>
-          <label class="check">
-            <input id="include_ai" name="include_ai" type="checkbox" />
-            <span>Generate AI breach-impact brief</span>
-          </label>
-          <label>
-            AI gateway endpoint
-            <input id="ai_gateway_url" name="ai_gateway_url" placeholder="https://165.245.244.247.sslip.io/v1/analyze" autocomplete="off" />
-          </label>
-          <label>
-            ORBIT access token (optional)
-            <input id="api_token" name="api_token" type="password" autocomplete="off" />
-          </label>
+          </fieldset>
+
+          <fieldset class="ai-box">
+            <legend>Optional AI brief</legend>
+            <label class="check">
+              <input id="include_ai" name="include_ai" type="checkbox" aria-controls="ai-fields" />
+              <span>Request AI breach-impact brief</span>
+            </label>
+            <div id="ai-fields" class="ai-fields" hidden>
+              <p class="meta">AI briefs use the hosted Threat Lens gateway. The public client sends only a redacted report; OpenAI credentials stay server-side.</p>
+              <label>
+                AI gateway endpoint
+                <input id="ai_gateway_url" name="ai_gateway_url" placeholder="https://165.245.244.247.sslip.io/v1/analyze" autocomplete="off" />
+              </label>
+              <label>
+                ORBIT access token
+                <input id="api_token" name="api_token" type="password" autocomplete="off" />
+              </label>
+              <p class="meta">Free daily limit applies. Contact threatlens@outlook.com for unlimited access.</p>
+            </div>
+          </fieldset>
+
           <button class="primary-action" id="run" type="submit">Run Authorized Scan</button>
-          <div class="meta safety-note">OpenAI credentials stay server-side. Reports are redacted before AI analysis.</div>
+          <div class="meta safety-note">ORBIT does not exploit findings, brute force credentials, bypass authentication, or run payloads. Always verify report details, risk context, and AI-generated guidance before making security decisions.</div>
         </form>
       </section>
-      <section class="panel results" id="results" aria-live="polite">
+      <section class="panel results" id="results" aria-live="polite" aria-busy="false">
         <div class="empty">
-          <div class="empty-card">
-            <img src="/static/logo.png" alt="" />
-            <h2>No assessment loaded</h2>
-            <p class="meta">Run an authorized scan to see risk score, severity counts, prioritized findings, optional AI breach-impact brief, and raw report output.</p>
+          <div class="preview-head">
+            <div>
+              <div class="eyebrow">Report workspace</div>
+              <h2>Ready for an authorized assessment</h2>
+              <p class="meta">Run a scan to produce a prioritized exposure report with evidence, remediation guidance, JSON, Markdown, and optional AI breach-impact analysis.</p>
+            </div>
+            <span class="pill brand">No report loaded</span>
+          </div>
+          <div class="preview-grid" aria-label="Report preview">
+            <div class="preview-card">
+              <strong>Risk score</strong>
+              <p class="meta">A 0-100 posture score with severity context and top concerns.</p>
+              <ul class="preview-list">
+                <li>Critical and high-risk signals first</li>
+                <li>Completion time and target metadata</li>
+              </ul>
+            </div>
+            <div class="preview-card">
+              <strong>Findings</strong>
+              <p class="meta">DNS, TLS, HTTP, exposure, and selected TCP service checks.</p>
+              <ul class="preview-list">
+                <li>Evidence count and finding IDs</li>
+                <li>Impact and remediation text</li>
+              </ul>
+            </div>
+            <div class="preview-card">
+              <strong>Exports</strong>
+              <p class="meta">Copy or download report output after the scan completes.</p>
+              <ul class="preview-list">
+                <li>JSON for automation</li>
+                <li>Markdown for remediation handoff</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -565,35 +763,50 @@
       const form = document.querySelector("#scan-form");
       const button = document.querySelector("#run");
       const results = document.querySelector("#results");
+      const aiToggle = document.querySelector("#include_ai");
+      const aiFields = document.querySelector("#ai-fields");
+      let lastReport = null;
+      let lastJson = "";
+      let lastMarkdown = "";
+
+      syncAiFields();
+      aiToggle.addEventListener("change", syncAiFields);
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         button.disabled = true;
+        button.textContent = "Scanning...";
+        results.setAttribute("aria-busy", "true");
         results.innerHTML = `
           <div class="status-card">
             <div>
-              <div class="eyebrow">Live assessment</div>
-              <h2>Assessment in progress</h2>
-              <p class="meta">ORBIT is collecting posture signals and preparing the report.</p>
+              <div class="eyebrow">Assessment running</div>
+              <h2>Collecting posture signals</h2>
+              <p class="meta">ORBIT is checking the target and preparing a defensible report.</p>
             </div>
             <ul class="scan-steps">
               <li>Resolving target and DNS posture</li>
               <li>Checking web, TLS, header, and exposure signals</li>
-              <li>Preparing findings and optional breach-impact brief</li>
+              <li>Reviewing selected TCP service posture</li>
+              <li>Preparing exports and optional breach-impact brief</li>
             </ul>
           </div>
         `;
+
+        const includeAi = aiToggle.checked;
         const gatewayUrl = document.querySelector("#ai_gateway_url").value.trim();
-        const apiToken = document.querySelector("#api_token").value.trim();
+        const apiTokenInput = document.querySelector("#api_token");
+        const apiToken = apiTokenInput.value.trim();
         const payload = {
           target: document.querySelector("#target").value.trim(),
           authorized: document.querySelector("#authorized").checked,
           depth: document.querySelector("#depth").value,
-          timeout: Number(document.querySelector("#timeout").value || 30),
-          include_ai: document.querySelector("#include_ai").checked,
-          ai_gateway_url: gatewayUrl || null,
-          api_token: apiToken || null
+          timeout: Number(document.querySelector("#timeout").value || 4.0),
+          include_ai: includeAi,
+          ai_gateway_url: includeAi && gatewayUrl ? gatewayUrl : null,
+          api_token: includeAi && apiToken ? apiToken : null
         };
+
         try {
           const response = await fetch("/api/scan", {
             method: "POST",
@@ -602,7 +815,8 @@
           });
           const data = await response.json();
           if (!response.ok) throw new Error(data.detail || "Scan failed");
-          render(data.report);
+          render(data.report, data.markdown);
+          focusResultsOnMobile();
         } catch (error) {
           results.innerHTML = `
             <div class="error-panel">
@@ -611,16 +825,43 @@
               <p class="meta">${escapeHtml(error.message)}</p>
             </div>
           `;
+          focusResultsOnMobile();
         } finally {
+          results.setAttribute("aria-busy", "false");
+          apiTokenInput.value = "";
           button.disabled = false;
+          button.textContent = "Run Authorized Scan";
         }
       });
 
-      function render(report) {
+      results.addEventListener("click", async (event) => {
+        const action = event.target.closest("[data-export]");
+        if (!action) return;
+        const kind = action.getAttribute("data-export");
+        if (kind === "copy-json") await copyText(lastJson);
+        if (kind === "copy-markdown") await copyText(lastMarkdown);
+        if (kind === "download-json") downloadText(reportFileName("json"), lastJson, "application/json");
+        if (kind === "download-markdown") downloadText(reportFileName("md"), lastMarkdown, "text/markdown");
+      });
+
+      function syncAiFields() {
+        const enabled = aiToggle.checked;
+        aiFields.hidden = !enabled;
+        aiFields.querySelectorAll("input").forEach((input) => {
+          input.disabled = !enabled;
+        });
+      }
+
+      function render(report, markdown) {
+        lastReport = report;
+        lastJson = JSON.stringify(report, null, 2);
+        lastMarkdown = markdown || "";
+
         const counts = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
         for (const finding of report.findings) counts[finding.severity] = (counts[finding.severity] || 0) + 1;
         const totalFindings = report.findings.length;
         const risk = riskLevel(report.risk_score);
+        const topConcerns = report.findings.slice(0, 3).map((finding) => finding.title);
         const aiFailed = report.ai_summary && report.ai_summary.startsWith("AI analysis unavailable:");
         const aiPanel = report.ai_summary ? (aiFailed ? `
           <section class="warning-panel">
@@ -635,8 +876,10 @@
             <p class="ai-body">${escapeHtml(report.ai_summary)}</p>
           </section>
         `) : "";
+        const concerns = topConcerns.length ? topConcerns.map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("") : '<span class="pill">No prioritized concerns</span>';
         const findings = report.findings.map((finding) => {
-          const evidenceCount = (finding.evidence || []).length;
+          const evidence = finding.evidence || [];
+          const evidencePreview = evidence.slice(0, 2).map((item) => `<span class="pill">${escapeHtml(item.label)}: ${escapeHtml(item.value)}</span>`).join("");
           return `
             <article class="finding">
               <div class="finding-top">
@@ -644,30 +887,35 @@
                   <h3>${escapeHtml(finding.title)}</h3>
                   <div class="meta">${escapeHtml(finding.category)} / ${escapeHtml(finding.confidence || "medium")} confidence</div>
                 </div>
-                <span class="badge ${finding.severity}">${escapeHtml(finding.severity)}</span>
+                <span class="badge ${severityClass(finding.severity)}">${escapeHtml(finding.severity)}</span>
               </div>
               <p>${escapeHtml(finding.description)}</p>
               <p><strong>Impact:</strong> ${escapeHtml(finding.impact)}</p>
               <p><strong>Recommendation:</strong> ${escapeHtml(finding.recommendation)}</p>
               <div class="finding-foot">
-                <span class="pill">Evidence: ${evidenceCount}</span>
+                <span class="pill">Evidence: ${evidence.length}</span>
                 <span class="pill">ID: ${escapeHtml(finding.id)}</span>
+                ${evidencePreview}
               </div>
             </article>
           `;
         }).join("");
+
         results.innerHTML = `
           <div class="summary-band">
-            <div class="risk-card">
+            <div class="risk-card ${risk.className}">
               <div>
-                <strong>${report.risk_score}</strong>
-                <span>${risk}</span>
+                <strong>${escapeHtml(report.risk_score)}</strong>
+                <span>${escapeHtml(risk.label)}</span>
               </div>
             </div>
             <div class="summary-copy">
-              <div class="eyebrow">Assessment summary</div>
+              <div class="eyebrow">Exposure summary</div>
               <h2>${escapeHtml(report.target.host)}</h2>
               <p class="meta">${escapeHtml(report.summary)}</p>
+              <div class="top-concerns" aria-label="Top concerns">
+                ${concerns}
+              </div>
               <div class="summary-meta">
                 <span class="pill">Target: ${escapeHtml(report.target.origin || report.target.host)}</span>
                 <span class="pill">Completed: ${formatDate(report.completed_at)}</span>
@@ -675,33 +923,48 @@
               </div>
             </div>
           </div>
-          <div class="metrics">
-            <div class="metric"><span>Critical</span><strong>${counts.critical}</strong></div>
-            <div class="metric"><span>High</span><strong>${counts.high}</strong></div>
-            <div class="metric"><span>Medium</span><strong>${counts.medium}</strong></div>
-            <div class="metric"><span>Low</span><strong>${counts.low}</strong></div>
-            <div class="metric"><span>Info</span><strong>${counts.info}</strong></div>
+          <div class="metrics" aria-label="Severity counts">
+            <div class="metric critical"><span>Critical</span><strong>${counts.critical}</strong></div>
+            <div class="metric high"><span>High</span><strong>${counts.high}</strong></div>
+            <div class="metric medium"><span>Medium</span><strong>${counts.medium}</strong></div>
+            <div class="metric low"><span>Low</span><strong>${counts.low}</strong></div>
+            <div class="metric info"><span>Info</span><strong>${counts.info}</strong></div>
           </div>
           ${aiPanel}
           <div class="section-title">
-            <h2>Prioritized findings</h2>
+            <h2>Findings by priority</h2>
             <span class="pill">${totalFindings} total</span>
           </div>
           <div class="finding-list">
             ${findings || '<p class="meta">No findings were produced by the enabled checks.</p>'}
           </div>
-          <details>
-            <summary>Export / raw report</summary>
-            <pre>${escapeHtml(JSON.stringify(report, null, 2))}</pre>
-          </details>
+          <section class="export-panel">
+            <div class="eyebrow">Export</div>
+            <h2>Report outputs</h2>
+            <p class="meta">Use JSON for automation or Markdown for remediation handoff.</p>
+            <div class="export-actions">
+              <button class="secondary-action" type="button" data-export="copy-json">Copy JSON</button>
+              <button class="secondary-action" type="button" data-export="download-json">Download JSON</button>
+              <button class="secondary-action" type="button" data-export="copy-markdown">Copy Markdown</button>
+              <button class="secondary-action" type="button" data-export="download-markdown">Download Markdown</button>
+            </div>
+            <details class="raw-report">
+              <summary>Raw JSON report</summary>
+              <pre>${escapeHtml(lastJson)}</pre>
+            </details>
+          </section>
         `;
       }
 
       function riskLevel(score) {
-        if (score >= 80) return "Critical";
-        if (score >= 55) return "High";
-        if (score >= 25) return "Moderate";
-        return "Low";
+        if (score >= 80) return { label: "Critical", className: "risk-critical" };
+        if (score >= 55) return { label: "High", className: "risk-high" };
+        if (score >= 25) return { label: "Moderate", className: "risk-moderate" };
+        return { label: "Low", className: "risk-low" };
+      }
+
+      function severityClass(value) {
+        return ["critical", "high", "medium", "low", "info"].includes(value) ? value : "info";
       }
 
       function formatDate(value) {
@@ -709,6 +972,47 @@
         const date = new Date(value);
         if (Number.isNaN(date.getTime())) return escapeHtml(value);
         return escapeHtml(date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }));
+      }
+
+      function reportFileName(extension) {
+        const host = lastReport?.target?.host || "target";
+        const stamp = (lastReport?.completed_at || new Date().toISOString()).replaceAll(":", "").replaceAll("+", "Z");
+        const safeHost = host.replace(/[^a-zA-Z0-9_.-]+/g, "-").replace(/^-+|-+$/g, "") || "target";
+        return `orbit-${safeHost}-${stamp}.${extension}`;
+      }
+
+      function downloadText(filename, text, type) {
+        const blob = new Blob([text || ""], { type });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text || "");
+          return;
+        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text || "";
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+
+      function focusResultsOnMobile() {
+        if (!window.matchMedia("(max-width: 980px)").matches) return;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        results.scrollIntoView({ block: "start", behavior: reducedMotion ? "auto" : "smooth" });
       }
 
       function escapeHtml(value) {

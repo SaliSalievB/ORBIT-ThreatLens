@@ -6,9 +6,10 @@ from dataclasses import dataclass
 from http.client import HTTPResponse
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
+from orbit import __version__
 from orbit.models import Evidence, Finding, ScanOptions, Severity, Target
 
 
@@ -79,6 +80,16 @@ EXPOSURE_CHECKS = [
         "recommendation": "Remove .DS_Store files from deployed artifacts and block dotfile access at the web server.",
     },
 ]
+SENSITIVE_HEADER_KEYWORDS = (
+    "authorization",
+    "cookie",
+    "token",
+    "session",
+    "secret",
+    "key",
+    "api_key",
+    "apikey",
+)
 
 
 @dataclass(slots=True)
@@ -138,7 +149,7 @@ def run(target: Target, options: ScanOptions) -> tuple[dict[str, Any], list[Find
                         description="The cleartext HTTP endpoint did not land on an HTTPS URL.",
                         impact="Users may remain on cleartext transport if they enter or follow an HTTP URL.",
                         recommendation="Redirect HTTP to HTTPS before serving application content.",
-                        evidence=[Evidence("final_url", redirect_probe.final_url), Evidence("status", str(redirect_probe.status))],
+                        evidence=[Evidence("final_url", _sanitize_url(redirect_probe.final_url)), Evidence("status", str(redirect_probe.status))],
                         confidence="medium",
                     )
                 )
@@ -154,7 +165,7 @@ def _fetch(url: str, timeout: float, max_bytes: int = 65536, follow_redirects: b
     request = Request(
         url,
         headers={
-            "User-Agent": "ORBIT/0.1 authorized-security-assessment",
+            "User-Agent": f"ORBIT/{__version__} authorized-security-assessment",
             "Accept": "text/html,application/xhtml+xml,application/json,text/plain,*/*",
             "Accept-Encoding": "gzip",
             "Range": f"bytes=0-{max_bytes}" if max_bytes else "bytes=0-0",
@@ -200,8 +211,8 @@ def _maybe_decompress(body: bytes, encoding: str | None) -> bytes:
 
 def _summarize_fetch(result: FetchResult) -> dict[str, Any]:
     return {
-        "url": result.url,
-        "final_url": result.final_url,
+        "url": _sanitize_url(result.url),
+        "final_url": _sanitize_url(result.final_url),
         "status": result.status,
         "headers": {key: _safe_header_value(key, value) for key, value in result.headers.items()},
         "body_bytes_sampled": len(result.body),
@@ -209,11 +220,27 @@ def _summarize_fetch(result: FetchResult) -> dict[str, Any]:
 
 
 def _safe_header_value(key: str, value: str) -> str:
-    if key.lower() in {"set-cookie", "authorization"}:
+    lowered = key.lower()
+    if any(keyword in lowered for keyword in SENSITIVE_HEADER_KEYWORDS):
         return "[redacted]"
     if len(value) > 180:
         return f"{value[:180]}..."
     return value
+
+
+def _sanitize_url(value: str) -> str:
+    parsed = urlsplit(value)
+    if not parsed.scheme or not parsed.hostname:
+        return value.split("?", 1)[0].split("#", 1)[0]
+    try:
+        port = parsed.port
+    except ValueError:
+        port = None
+    host = parsed.hostname.lower().rstrip(".")
+    netloc = f"[{host}]" if ":" in host else host
+    if port:
+        netloc = f"{netloc}:{port}"
+    return urlunsplit((parsed.scheme, netloc, parsed.path or "/", "", ""))
 
 
 def _header_findings(result: FetchResult, target: Target) -> list[Finding]:
@@ -231,7 +258,7 @@ def _header_findings(result: FetchResult, target: Target) -> list[Finding]:
                     description=f"The {header} response header was not present on the primary response.",
                     impact=impact,
                     recommendation=recommendation,
-                    evidence=[Evidence("url", result.final_url), Evidence("status", str(result.status))],
+                    evidence=[Evidence("url", _sanitize_url(result.final_url)), Evidence("status", str(result.status))],
                     confidence="high",
                 )
             )
@@ -246,7 +273,7 @@ def _header_findings(result: FetchResult, target: Target) -> list[Finding]:
                 description="Neither X-Frame-Options nor Content-Security-Policy was available to constrain framing.",
                 impact="Attackers may be able to embed sensitive pages in a hostile frame for clickjacking attacks.",
                 recommendation="Use CSP frame-ancestors or X-Frame-Options to restrict framing.",
-                evidence=[Evidence("url", result.final_url)],
+                evidence=[Evidence("url", _sanitize_url(result.final_url))],
                 confidence="medium",
             )
         )

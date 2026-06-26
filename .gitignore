@@ -13,6 +13,7 @@ dist/
 reports/
 .orbit-gateway.sqlite3
 .env
+.codex-audit/
 
 # Private SaaS backend. This folder may contain OPENAI_API_KEY and hosted
 # gateway code. It is intentionally local-only and must not be pushed.

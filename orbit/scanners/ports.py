@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ipaddress
 import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
@@ -66,16 +67,17 @@ def run(target: Target, options: ScanOptions) -> tuple[dict[str, Any], list[Find
         service, severity, recommendation = port_map[port]
         if port in {80, 443}:
             continue
+        context = _reachability_context(target)
         findings.append(
             Finding(
                 id=f"ORBIT-PORT-{port}",
-                title=f"Publicly reachable {service} service",
+                title=f"{context['title_prefix']} {service} service accepted a connection",
                 severity=severity,
                 category="network",
-                description=f"TCP port {port} accepted a connection during ORBIT's posture scan.",
-                impact="Publicly reachable services increase the attack surface and can become breach entry points if misconfigured or vulnerable.",
+                description=f"TCP port {port} accepted a connection from ORBIT's scan vantage point.",
+                impact=context["impact"],
                 recommendation=recommendation,
-                evidence=[Evidence("port", str(port)), Evidence("service", service)],
+                evidence=[Evidence("port", str(port)), Evidence("service", service), Evidence("reachability", context["evidence"])],
                 confidence="medium",
             )
         )
@@ -89,3 +91,32 @@ def _is_open(host: str, port: int, timeout: float) -> bool:
             return True
     except OSError:
         return False
+
+
+def _reachability_context(target: Target) -> dict[str, str]:
+    try:
+        address = ipaddress.ip_address(target.host)
+    except ValueError:
+        return {
+            "title_prefix": "Reachable",
+            "impact": "The service is reachable from the scanner. If this scan ran from an external network, the service may increase attack surface; if it ran from inside a trusted network, validate that the exposure is intentional.",
+            "evidence": "scanner vantage point",
+        }
+
+    if address.is_loopback:
+        return {
+            "title_prefix": "Local",
+            "impact": "The service is reachable on loopback from this machine. This does not prove public exposure, but local services should still be intentional, patched, and bound only where needed.",
+            "evidence": "loopback target",
+        }
+    if address.is_private or address.is_link_local:
+        return {
+            "title_prefix": "Private-network",
+            "impact": "The service is reachable from this scan vantage point on non-public address space. This does not prove internet exposure, but it may matter for internal segmentation and lateral-movement risk.",
+            "evidence": "non-public target",
+        }
+    return {
+        "title_prefix": "Internet-address",
+        "impact": "The service accepted a TCP connection on a public-address target. Confirm it is intentionally exposed and hardened, because reachable services can expand breach entry points if misconfigured or vulnerable.",
+        "evidence": "public-address target",
+    }

@@ -1,51 +1,36 @@
-# AI Gateway And SaaS Split
+# AI Gateway And Public/Private Split
 
-ORBIT uses AI through a hosted gateway so the public client never receives OpenAI credentials.
+ORBIT uses AI only through a hosted gateway. The public client never receives provider credentials.
 
 ```text
-ORBIT client -> Threat Lens gateway -> OpenAI Responses API
+ORBIT client -> Threat Lens gateway -> AI provider
 ```
 
-## Public Repository
+## Public Client Responsibilities
 
-The publishable repository contains:
+The public repository contains:
 
 - scanner modules,
-- CLI,
-- local dashboard,
-- report generation,
-- redaction logic,
-- gateway client.
+- CLI and local dashboard,
+- JSON and Markdown report generation,
+- client-side report redaction,
+- gateway client code.
 
-It does not contain the OpenAI-backed server module.
+The public client may send a redacted report to the gateway when the user enables AI. It must not contain OpenAI keys, premium tokens, private deployment files, or usage databases.
 
-## Private SaaS Folder
+## Private Gateway Responsibilities
 
-The private implementation lives locally in:
+The private gateway owns:
 
-```text
-private_saas/
-```
+- provider credential storage,
+- provider/model configuration,
+- freemium or premium access decisions,
+- usage counting and persistence,
+- gateway-side report redaction,
+- defensive breach-impact summary generation,
+- deterministic fallback summaries when the provider is unavailable.
 
-That folder is ignored by git:
-
-```gitignore
-private_saas/
-```
-
-Keep it ignored. It can contain `OPENAI_API_KEY`, gateway deployment configuration, usage databases, and premium-token lists.
-
-## Private Gateway Defaults
-
-| Setting | Default |
-| --- | --- |
-| OpenAI model | `gpt-5.5` |
-| OpenAI API | Responses API |
-| Free daily limit | `5` |
-| Premium access | comma-separated bearer tokens |
-| Upgrade contact | `threatlens@outlook.com` |
-
-OpenAI’s current [GPT-5.5 guidance](https://developers.openai.com/api/docs/guides/latest-model) identifies `gpt-5.5` as the latest model and recommends the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) for GPT-5 reasoning workloads.
+Keep private gateway code and deployment state outside the public package or in ignored local-only paths such as `private_saas/`.
 
 ## Client Configuration
 
@@ -55,24 +40,17 @@ export ORBIT_API_TOKEN="user-token"
 orbit scan https://example.com --authorized --ai
 ```
 
-The token is an ORBIT gateway token, not an OpenAI key.
+`ORBIT_API_TOKEN` is an ORBIT gateway token. It is not an OpenAI API key.
 
-Current hosted gateway: `https://165.245.244.247.sslip.io`. The droplet Caddy config also includes `orbit.threatxlens.com`, which can become the default once the Cloudflare A record points to the droplet.
+The public client accepts HTTPS gateway URLs by default. It rejects missing hosts, unsupported schemes, embedded username/password values, and public HTTP gateway URLs before opening a network connection. HTTP is available only for loopback development gateways when `ORBIT_ALLOW_INSECURE_AI_GATEWAY=1` is set.
 
-## Private Gateway Configuration
+The current hosted gateway is:
 
-The ignored `private_saas/.env.example` contains the private server variables:
+```text
+https://165.245.244.247.sslip.io
+```
 
-| Variable | Purpose |
-| --- | --- |
-| `OPENAI_API_KEY` | OpenAI credential used only by the private gateway |
-| `ORBIT_AI_MODEL` | OpenAI model, default `gpt-5.5` |
-| `ORBIT_AI_REASONING_EFFORT` | Responses API reasoning effort |
-| `ORBIT_AI_VERBOSITY` | Responses API output verbosity |
-| `ORBIT_FREE_DAILY_LIMIT` | Daily request limit for free identities |
-| `ORBIT_PREMIUM_TOKENS` | Comma-separated premium tokens that bypass limits |
-| `ORBIT_GATEWAY_DB` | SQLite usage database path |
-| `ORBIT_CONTACT_EMAIL` | Contact shown in limit responses |
+Keep that public default until branded DNS is live, TLS is verified, and monitoring confirms the branded endpoint is stable.
 
 ## API Contract
 
@@ -99,6 +77,8 @@ Content-Type: application/json
 {"report": {"target": "...", "findings": []}}
 ```
 
+The gateway returns a defensive breach-impact summary and optional usage metadata. It must not return exploit steps, payloads, credential abuse guidance, or bypass instructions.
+
 ## Data Handling
 
-The public client redacts likely secrets before sending reports. The private gateway redacts again before calling OpenAI. Raw response bodies and credential-bearing fields are not needed for breach-impact summaries.
+The public client redacts likely secrets before sending reports. The private gateway should redact again before calling the provider. Raw response bodies and credential-bearing fields are not needed for breach-impact summaries.

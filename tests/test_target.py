@@ -20,6 +20,19 @@ def test_normalize_target_preserves_port_and_path() -> None:
     assert target.path == "/login"
 
 
+def test_normalize_target_removes_query_and_fragment_from_stored_value() -> None:
+    target = normalize_target("https://Example.COM/login?token=secret#section")
+
+    assert target.original == "https://example.com/login"
+    assert target.path == "/login"
+    assert "token=secret" not in target.to_dict()["original"]
+
+
 def test_normalize_target_rejects_invalid_scheme() -> None:
     with pytest.raises(TargetError):
         normalize_target("ftp://example.com")
+
+
+def test_normalize_target_rejects_userinfo_credentials() -> None:
+    with pytest.raises(TargetError, match="username or password"):
+        normalize_target("https://user:secret@example.com")
